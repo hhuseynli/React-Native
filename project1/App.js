@@ -5,7 +5,8 @@ export default class App extends React.Component {
   state = {
     minutes: 25,
     seconds: 0,
-    isStarted: true
+    isStarted: true,
+    isRest: false
 
   }
 
@@ -22,8 +23,18 @@ export default class App extends React.Component {
     
   checkTime(){
     if(this.state.minutes === 0 && this.state.seconds === 0 && this.state.isStarted){
-      this.stopTimer()
-      Vibration.vibrate()
+      Vibration.vibrate() 
+      this.stopTimer()     
+      if(this.state.isRest){
+        this.setState({minutes: 25, seconds:0})
+      } else {
+        this.setState({minutes:5, seconds:0})
+      }
+      this.setState(prevState => ({isRest: !prevState.isRest}))
+      this.pauseTimer()
+      
+      
+
     } else if (this.state.seconds === 0 && this.state.isStarted){
       this.setState(prevState => ({
         minutes: prevState.minutes - 1,
@@ -42,8 +53,8 @@ export default class App extends React.Component {
   }
 
   pauseTimer = () => {
-    this.decreaseSecs()
-    this.setState({isStarted:true})    
+    this.setState({isStarted:true}) 
+    this.decreaseSecs()       
   }
 
   decreaseSecs() {
