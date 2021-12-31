@@ -47,7 +47,7 @@ const AppNavigator = createSwitchNavigator({
   Login:LoginScreen
 },
 {
-  initialRouteName:"Login"
+  initialRouteName:"Main"
 })
 
 export default class App extends React.Component {
