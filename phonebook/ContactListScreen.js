@@ -5,10 +5,7 @@ import contacts, {compareNames} from './contacts'
 import SectionListContacts from './SectionListContacts'
 
 class ContactListScreen extends React.Component {
-    static navigationOptions = ({navigation}) => ({
-        headerTitle: "Phonebook",
-        headerRight: <Button title="Add" color={'#a41034'} onPress={() => {navigation.navigate("AddContact")}}/>
-    })
+
 
   state = {
     showContacts: true,
@@ -49,8 +46,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const getPropsFromState = state => {
-  contacts:state.contacts
-}
+const getPropsFromState = state => ({
+  contacts: state.contacts
+})
 
 export default connect(getPropsFromState)(ContactListScreen)

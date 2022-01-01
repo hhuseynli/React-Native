@@ -1,5 +1,6 @@
 import React from 'react';
-import { createStackNavigator, createBottomTabNavigator, createSwitchNavigator} from 'react-navigation'
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AddContactScreen from './AddContactScreen';
 import ContactListScreen from './ContactListScreen'
 import ContactDetailsScreen from './ContactDetailsScreen';
@@ -10,47 +11,49 @@ import LoginScreen from './LoginScreen';
 import { fetchUsers } from './api';
 import { Provider } from 'react-redux';
 import store from './redux/store';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Button } from 'react-native';
 
 
 
-const StackNavigator = createStackNavigator({
-  AddContact:AddContactScreen,
-  ContactList: ContactListScreen,
-  ContactDetails: ContactDetailsScreen
-},{
-  initialRouteName: 'ContactList',
-  navigationOptions:{headerTintColor: '#a41034'}
-})
+const Stack = createNativeStackNavigator()
 
-StackNavigator.navigationOptions = {
-  tabBarIcon: ({ focused, tintColor }) => (
-    <Ionicons
-    
-      name={`people${focused ? "" : "-outline"}`}
-      size={25}
-      color={tintColor}
-    />
-  )
+function contacts() {
+  return (
+  <Stack.Navigator 
+    initialRouteName='ContactList'
+    screenOptions={
+      {headerTintColor: '#a41034'}
+  }
+    >
+      <Stack.Screen 
+      name="AddContact" 
+      component={AddContactScreen}
+      options={{title:"Add Contact"}}/>
+
+      <Stack.Screen 
+      name="ContactList" 
+      component={ContactListScreen} 
+      options={
+        ({navigation}) => ({
+          headerTitle: "Phonebook",
+          headerRight: () => (<Button title="Add" color={'#a41034'} onPress={() => {navigation.navigate("AddContact")}}/>)
+        })
+    }/>
+      <Stack.Screen 
+      name="ContactDetails" 
+      component={ContactDetailsScreen}
+      options={
+        ({route}) =>({
+          title: route.params.name
+        })
+    }
+      />
+    </Stack.Navigator>
+    )
 }
 
-const MainNavigator = createBottomTabNavigator({
-  Contacts: StackNavigator,
-  Settings: SettingsScreen
-},{
-  tabBarOptions:
-  {
-    activeTintColor: '#a41034'
-  }
-})
-
-
-const AppNavigator = createSwitchNavigator({
-  Main: MainNavigator,
-  Login:LoginScreen
-},
-{
-  initialRouteName:"Main"
-})
+const Tab = createBottomTabNavigator()
 
 export default class App extends React.Component {
 
@@ -64,6 +67,31 @@ export default class App extends React.Component {
 
 
   render() {
-    return <Provider store={store}><AppNavigator screenProps={{addContact: this.addContact}}/></Provider>
+    return <Provider store={store}>
+      <NavigationContainer>
+        <Tab.Navigator>
+          <Tab.Screen name="Contacts" 
+          component={contacts}
+          options={{ headerShown: false,tabBarActiveTintColor: '#a41034', tabBarIcon: ({ focused}) => (
+            <Ionicons          
+              name={`people${focused ? "" : "-outline"}`}
+              size={25}
+            />
+          )}}/>
+          <Tab.Screen 
+          name="Settings" 
+          component={SettingsScreen}
+          options={
+            {tabBarActiveTintColor: '#a41034',
+            tabBarIcon: ({ focused}) => (
+            <Ionicons
+              name={`ios-options${focused ? "" : "-outline"}`}
+              size={25}
+            />
+            )}
+          }/>
+        </Tab.Navigator>
+      </NavigationContainer>
+      </Provider>
   }
 }
