@@ -9,9 +9,11 @@ class ContactDetailsScreen extends React.Component{
             <View>
                 <Text>{this.props.route.params.phone}</Text>
                 <Button title='Go to Random'  onPress={this.goToRandomContact}/>
+                <Button title="Go back to contacts" onPress={() => this.props.navigation.popToTop()}/>
             </View>
         )
     }
+
 
     goToRandomContact = () => {
         const contacts  = this.props.contacts;
