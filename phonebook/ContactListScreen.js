@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button, StyleSheet, SafeAreaView } from 'react-native';
-
+import { connect } from 'react-redux';
 import contacts, {compareNames} from './contacts'
 import SectionListContacts from './SectionListContacts'
 
-export default class App extends React.Component {
+class ContactListScreen extends React.Component {
     static navigationOptions = ({navigation}) => ({
         headerTitle: "Phonebook",
         headerRight: <Button title="Add" color={'#a41034'} onPress={() => {navigation.navigate("AddContact")}}/>
@@ -31,7 +31,7 @@ export default class App extends React.Component {
         <Button title="toggle contacts" onPress={this.toggleContacts} />
         {this.state.showContacts && 
         <SectionListContacts 
-        contacts={this.props.screenProps.contacts} 
+        contacts={this.props.contacts} 
         onSelectContact={contact => {this.props.navigation.navigate("ContactDetails", {
             phone:contact.phone,
             name:contact.name
@@ -48,3 +48,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 });
+
+const getPropsFromState = state => {
+  contacts:state.contacts
+}
+
+export default connect(getPropsFromState)(ContactListScreen)

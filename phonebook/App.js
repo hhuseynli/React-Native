@@ -8,6 +8,8 @@ import SettingsScreen from './SettingsScreen';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import LoginScreen from './LoginScreen';
 import { fetchUsers } from './api';
+import { Provider } from 'react-redux';
+import store from './redux/store';
 
 
 
@@ -53,24 +55,15 @@ const AppNavigator = createSwitchNavigator({
 export default class App extends React.Component {
 
 
-  state = {
-    contacts: null
-  }
-
   componentDidMount(){
     fetchUsers()
     .then(results => this.setState({contacts: results}))
     .catch(err => console.error(err))
   }
 
-  addContact = newContact => {
-    this.setState(prevState => ({
-      contacts: [...prevState.contacts, newContact]
-    }));
 
-   }
 
   render() {
-    return <AppNavigator screenProps={{contacts: this.state.contacts, addContact: this.addContact}}/>
+    return <Provider store={store}><AppNavigator screenProps={{addContact: this.addContact}}/></Provider>
   }
 }
