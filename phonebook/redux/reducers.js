@@ -1,16 +1,27 @@
 const {combineReducers} = require('redux')
-const { UPDATE_CONTACT, UPDATE_USER } = require('./actions')
+import contacts from "../contacts"
+import * as actions from "./actions"
 
 const merge = (prev, next) => Object.assign({}, prev, next)
 
 const contactReducer = (state = [], action) => {
-    if(action.type === UPDATE_CONTACT) return [...state, action.payload]
+    if(action.type === actions.UPDATE_CONTACT) return [...state, action.payload]
     return state
 }
 
 const userReducer = (state = {}, action) => {
-    if(action.type === UPDATE_USER) return merge(state, action.payload)
-    return state
+    switch (action.type) {
+        case actions.UPDATE_USER:
+            return merge(state, action.payload)
+        case actions.LOG_IN_SUCCESS:
+            console.log("success")
+            return merge(state, {userLoggedIn:true})
+        case actions.LOG_IN_FAIL:
+            return merge(state, {loginErr: action.payload})
+        default:
+            return state
+    }
+    
 }
 
 export const reducer = combineReducers({

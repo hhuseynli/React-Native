@@ -5,9 +5,6 @@ import { addContact } from './redux/actions';
 
 
 class AddContactScreen extends React.Component {
-    static navigationOptions = {
-        headerTitle:"Add Contact"
-    }
 
     handleSubmit = formState => {
         this.props.addContact(formState)

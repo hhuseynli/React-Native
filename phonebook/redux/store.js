@@ -1,10 +1,27 @@
-const {createStore} = require('redux')
-const { updateUser, addContact } = require('./actions')
-const { reducer } = require('./reducers')
+import {createStore, applyMiddleware} from 'redux'
+import { updateUser, addContact } from './actions'
 
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
 
-const store = createStore(reducer)
-store.dispatch(addContact({name:"Jordan Hayashi", phone:"0123456252"}))
-store.dispatch(addContact({name:"David J. Malan", phone:"0123453527"}))
-store.dispatch(addContact({name:"Huseyn Huseynli", phone:"0123226789"}))
+import {reducer} from './reducers'
+import contacts from '../contacts'
+
+const persistConfig = {
+  key: 'root',
+  storage,
+}
+
+const persistedReducer = persistReducer(persistConfig, reducer)
+const thunk = store => next => action => {
+    if (typeof action === "function"){
+        action(store.dispatch)
+    } else {
+        next(action)
+    }
+}
+
+export const store = createStore(persistedReducer, contacts, applyMiddleware(thunk))
+export const persistor = persistStore(store)
+
 export default store

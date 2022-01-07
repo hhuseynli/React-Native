@@ -1,12 +1,13 @@
 import React from "react";
 import { Button, KeyboardAvoidingView, StyleSheet, TextInput, Text, Platform } from "react-native";
+import { connect } from "react-redux";
 import { login } from "./api";
+import { loginUser } from "./redux/actions";
 
-export default class LoginScreen extends React.Component {
+class LoginScreen extends React.Component {
   state={
     username:"",
-    password:"",
-    err:""
+    password:""
   }
 
    
@@ -16,13 +17,8 @@ export default class LoginScreen extends React.Component {
   }
 
    _login = async () => {
-    try {
-      const success = await login(this.state.username, this.state.password)
-      this.props.navigation.navigate('Main')
-    } catch (err) {
-      const errMessage = err.message
-      this.setState({err: errMessage})
-    }
+      this.props.loginUser(this.state.username, this.state.password)
+
   }
 
   render() {
@@ -42,7 +38,7 @@ export default class LoginScreen extends React.Component {
         onChangeText={this.handleChange('password')} 
         secureTextEntry/>
 
-        <Text style={styles.error}>{this.state.err}</Text>
+        <Text style={styles.error}>{this.props.err}</Text>
         <Button title="Log In" onPress={this._login} />
 
       </KeyboardAvoidingView>
@@ -72,3 +68,9 @@ const styles = StyleSheet.create({
     color:"red"
   }
 });
+
+const mapStateToProps = state => ({
+  err:state.user.loginErr
+})
+
+export default connect(mapStateToProps, {loginUser: loginUser})(LoginScreen)

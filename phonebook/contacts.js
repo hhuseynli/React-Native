@@ -23,4 +23,4 @@ export const compareNames = (contact1, contact2) => contact1.name > contact2.nam
 const addKeys = (val, key) => ({key, ...val})
 
 // create an array of length NUM_CONTACTS and alphabetize by name
-export default Array.from({length: NUM_CONTACTS}, createContact).map(addKeys)
+export default {user: Array.from({length: NUM_CONTACTS}, createContact).map(addKeys)}
